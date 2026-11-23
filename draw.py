@@ -94,9 +94,9 @@ def text_block(draw, xy, lines, fnt, fill, leading):
 # ---------------------------------------------------------------- stories
 # Each lead: number, scene key, place, field, headline, body, source.
 LEADS = [
-    (1, "summit", "BELÉM, BRAZIL", "CLIMATE",
+    (1, "summit", "ANTALYA, TÜRKIYE", "CLIMATE",
      "COP31 collapses — no deal",
-     "COP31 ends without agreement in Belém; talks break down. (BBC)",
+     "COP31 ends without agreement in Antalya; talks break down. (BBC)",
      "BBC"),
     (2, "ballot", "WASHINGTON", "POLITICS",
      "Democrats take the House, 258–177",
@@ -213,7 +213,7 @@ DATE_CHECK = ("DATE CHECK — Left out as other days' news: GTA 6 sales (20 Nov)
 
 # Map pins: story number -> (x, y) inside the map box.
 PINS = {
-    1: (96, 118), 2: (48, 52), 3: (306, 36), 4: (186, 74), 5: (186, 44),
+    1: (196, 60), 2: (48, 52), 3: (306, 36), 4: (186, 74), 5: (186, 44),
     6: (206, 76), 7: (164, 36), 8: (280, 66), 9: (290, 50), 10: (316, 152),
     11: (246, 62), 12: (66, 38), 13: (296, 160),
 }
@@ -409,17 +409,37 @@ def scene_quake(draw, x, y, w, h):
 
 
 def scene_flags(draw, x, y, w, h):
-    """Two flags on poles over a green field."""
+    """Nepal (crimson double pennant, blue border) and India (saffron /
+    white / green tricolour with navy chakra) on poles over a green field."""
     draw.rectangle([x, y, x + w, y + h * 0.55], fill=(185, 218, 238))
     draw.rectangle([x, y + h * 0.55, x + w, y + h], fill=(110, 170, 100))
-    for fx, cols in [(0.22, ((200, 40, 40), (255, 255, 255))),
-                     (0.60, ((20, 80, 160), (255, 200, 40)))]:
-        px = x + w * fx
-        draw.line([px, y + h * 0.12, px, y + h * 0.85], fill=INK, width=2)
-        draw.rectangle([px, y + h * 0.14, px + w * 0.26, y + h * 0.30],
-                       fill=cols[0])
-        draw.rectangle([px, y + h * 0.30, px + w * 0.26, y + h * 0.38],
-                       fill=cols[1])
+    # Nepal: double-pennant silhouette, crimson fill, blue border, white
+    # sun/moon dots (one per pennant).
+    px = x + w * 0.22
+    fx0, fy0 = px, y + h * 0.14
+    fw, fh = w * 0.26, h * 0.24
+    nepal = [(fx0, fy0), (fx0 + fw, fy0 + fh * 0.35), (fx0, fy0 + fh * 0.45),
+             (fx0 + fw, fy0 + fh * 0.85), (fx0, fy0 + fh)]
+    draw.line([px, y + h * 0.12, px, y + h * 0.85], fill=INK, width=2)
+    draw.polygon(nepal, fill=(220, 20, 60))
+    draw.line(nepal + [nepal[0]], fill=(0, 56, 147), width=2, joint="curve")
+    for dy in (0.16, 0.62):
+        draw.ellipse([fx0 + fw * 0.18 - 2, fy0 + fh * dy - 2,
+                      fx0 + fw * 0.18 + 2, fy0 + fh * dy + 2], fill=WHITE)
+    # India: saffron / white / green bands with a navy chakra wheel.
+    px = x + w * 0.60
+    fx0, fy0 = px, y + h * 0.14
+    draw.line([px, y + h * 0.12, px, y + h * 0.85], fill=INK, width=2)
+    band = fh / 3
+    draw.rectangle([fx0, fy0, fx0 + fw, fy0 + band], fill=(255, 153, 51))
+    draw.rectangle([fx0, fy0 + band, fx0 + fw, fy0 + 2 * band], fill=WHITE)
+    draw.rectangle([fx0, fy0 + 2 * band, fx0 + fw, fy0 + fh],
+                   fill=(19, 136, 8))
+    cx, cy, cr = fx0 + fw / 2, fy0 + fh / 2, fh * 0.18
+    draw.ellipse([cx - cr, cy - cr, cx + cr, cy + cr], outline=(0, 0, 128),
+                 width=1)
+    draw.line([cx - cr, cy, cx + cr, cy], fill=(0, 0, 128), width=1)
+    draw.line([cx, cy - cr, cx, cy + cr], fill=(0, 0, 128), width=1)
 
 
 def scene_stage(draw, x, y, w, h):
